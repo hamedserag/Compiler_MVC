@@ -106,6 +106,7 @@ namespace Compiler_.Controllers
                     else
                     {
                         Console.WriteLine("lexical error at: " + lextoken);
+                        ViewBag.tokens += "line: " + line + " █ " + "lexical error at: " + lextoken + " <br>";
                     }
                 }
 
