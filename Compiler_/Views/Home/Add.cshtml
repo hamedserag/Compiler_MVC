@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Add";
+}
+
+<h2>Add</h2>
+<p>@ViewBag.error</p>
+
+<form action="add" method="post" enctype="multipart/form-data">
+    <div class="row justify-content-center align-items-center">
+        <input class="col-2 fileInput" accept=".txt" type="file" name="img" value="file" />
+        <div class="col-2 d-flex align-items-center">
+            <button class="w-100 lightBtn" type="submit">Compile</button>
+        </div>
+
+    </div>
+</form>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

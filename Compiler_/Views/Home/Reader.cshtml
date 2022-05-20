@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Reader";
+}
+
+@Html.Action("TxtInput", "Home")
+
+@Html.Action("add", "Home")
+
+<h2>Scanner Result</h2>
+<p>
+    @Html.Raw(ViewBag.tokens)
+</p>
