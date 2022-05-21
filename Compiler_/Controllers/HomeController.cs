@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -106,7 +106,6 @@ namespace Compiler_.Controllers
                     else
                     {
                         Console.WriteLine("lexical error at: " + lextoken);
-                        ViewBag.tokens += "line: " + line + " █ " + "lexical error at: " + lextoken + " <br>";
                     }
                 }
 
@@ -114,8 +113,6 @@ namespace Compiler_.Controllers
             reader.Close();
             return View();
         }
-
-
         public static IDictionary<string, int> TOKENS = new Dictionary<string, int>();
         public static Dictionary<string, string> RULES = new Dictionary<string, string>()
     {
@@ -172,19 +169,50 @@ namespace Compiler_.Controllers
             string str;
             string temp;
             string token = "";
+            bool flag = false;
             var tokens = new List<string>();
             while (!sr.EndOfStream)
             {
                 line++;
                 //Console.WriteLine("Line = :" + line);
+
                 str = sr.ReadLine();
                 temp = line + ": " + str;
                 //Console.WriteLine(temp);
-
+                // Console.WriteLine("line length" + str.Length);
                 tokens.Add("_$");
-                ;
                 for (int i = 0; i < str.Length; i++)
                 {
+                    //for block comment
+                    if (str[i] == '<' && str[i + 1] == '/')
+                    {
+                        Console.WriteLine(str[i] + " start of block comment " + str.Length);
+                        flag = true;
+                        break;
+                    }
+                    if (flag && str[i] != '/')
+                    {
+                        //str.EndsWith('>');
+                        continue;
+                    }
+                    if (flag && i == str.Length - 1 && flag && str[i] == '/')
+                    {
+                        break;
+                    }
+                    if (flag && str[i] == '/' && str[i + 1] == '>')
+                    {
+                        i++;
+                        flag = false;
+                        continue;
+                    }
+                    // check for line comment
+                    if (str[i] == '*' && str[i + 1] == '*' && str[i + 2] == '*')
+                    {
+                        Console.WriteLine(str[i] + "start of line comment");
+                        break;
+                    }
+
+
                     if (str[i] == ' ' || str[i] == '\n')
                     {
                         //TOKENS.Add(new KeyValuePair<string, int>(token, line));
@@ -249,7 +277,6 @@ namespace Compiler_.Controllers
         // check for check for rules
         public Boolean isRule(string token, int line)
         {
-
             foreach (var rule in RULES)
             {
                 if (token == rule.Key)
@@ -261,7 +288,6 @@ namespace Compiler_.Controllers
             }
             return false;
         }
-
         // check for constants
         public static Boolean isConstant(string token)
         {
@@ -278,7 +304,7 @@ namespace Compiler_.Controllers
             snglop += str;
             List<string> singleop = new List<string>()
        {
-         "@","^","$","# ","+","-","*","/","~","<",">","{","}", "[","]",",",";","="
+         "@","^","$","#","+","-","*","/","~","<",">","{","}", "[","]",",",";","=","~"
        };
 
             if (singleop.Contains(snglop))
@@ -295,7 +321,7 @@ namespace Compiler_.Controllers
             dblop += str2;
             List<string> doubleop = new List<string>()
       {
-        "&&", "||", "~", "==","!=","<=", ">=","->"
+        "&&", "||", "==","!=","<=", ">=","->"
       };
             if (doubleop.Contains(dblop))
             {
